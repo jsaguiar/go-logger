@@ -18,11 +18,7 @@ func Init(config Config) error {
 		return errors.New("logger cannot be initialized more than once")
 	}
 
-	once.Do(func() {
-		// todo use implementation according to the env
-		instance = internal.NewLogrusLogger(config.level, os.Stdout)
-		defaultFields = config.projectFields
-	})
+	InitWithInstance(internal.NewLogrusLogger(config.level, os.Stdout), config.projectFields)
 
 	return nil
 }
@@ -33,8 +29,10 @@ func InitWithInstance(newInstance Logger, newDefaultFields Fields) error {
 		return errors.New("logger cannot be initialized more than once")
 	}
 
-	instance = newInstance
-	defaultFields = newDefaultFields
+	once.Do(func() {
+		instance = newInstance
+		defaultFields = newDefaultFields
+	})
 
 	return nil
 }
