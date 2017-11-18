@@ -7,7 +7,7 @@ import (
 )
 
 func TestBuilder(t *testing.T) {
-	initializedFields := make(map[string]interface{})
+	initializedFields := Fields{}
 
 	builder := Builder()
 	assert.Equal(t, builder.fields, initializedFields)
@@ -15,7 +15,7 @@ func TestBuilder(t *testing.T) {
 }
 
 func TestBuilder_AddField(t *testing.T) {
-	expectedFields := map[string]interface{}{
+	expectedFields := Fields{
 		"test": "value",
 	}
 
@@ -26,7 +26,7 @@ func TestBuilder_AddField(t *testing.T) {
 }
 
 func TestBuilder_AddContextField(t *testing.T) {
-	expectedContextFields := map[string]interface{}{
+	expectedContextFields := Fields{
 		"test": "value",
 	}
 

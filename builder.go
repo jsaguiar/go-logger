@@ -1,22 +1,20 @@
 package go_logger
 
-import "os"
-
 const (
 	contextFieldsKey = "context"
 	logType          = "app"
 )
 
 type builder struct {
-	fields        fields
-	contextFields fields
+	fields        Fields
+	contextFields Fields
 }
 
-// Builder initializes logger fields builder
+// Builder initializes logger Fields builder
 func Builder() builder {
 	return builder{
-		fields:        fields{},
-		contextFields: fields{},
+		fields:        Fields{},
+		contextFields: Fields{},
 	}
 }
 
@@ -28,7 +26,7 @@ func (builder builder) AddField(key string, value interface{}) builder {
 }
 
 func (builder builder) AddFields(fields map[string]interface{}) builder {
-	builder.AddFields(fields)
+	builder.fields.AddFields(fields)
 
 	return builder
 }
@@ -47,20 +45,14 @@ func (builder builder) AddContextFields(fields map[string]interface{}) builder {
 	return builder
 }
 
-func (builder builder) getFieldsWithMandatoryKeys() map[string]interface{} {
-	builder.
-		AddField("type", logType).
-		AddField("app-id", os.Getenv("APPID")).
-		AddField("env", os.Getenv("GOENV")).
-		AddField("git-hash", os.Getenv("GITHASH"))
-
-	return builder.getFields()
+func (builder builder) getFieldsWithDefaultValues(defaultFields Fields) map[string]interface{} {
+	return builder.AddFields(defaultFields).getFields()
 }
 
 func (builder builder) getFields() map[string]interface{} {
-	fields := builder.fields
+	fields := builder.fields.getFieldsAsMap()
 	if len(builder.contextFields) > 0 {
-		fields[contextFieldsKey] = builder.contextFields
+		fields[contextFieldsKey] = builder.contextFields.getFieldsAsMap()
 	}
 
 	if len(fields) == 0 {
