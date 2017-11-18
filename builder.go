@@ -8,36 +8,41 @@ const (
 )
 
 type builder struct {
-	fields        map[string]interface{}
-	contextFields map[string]interface{}
+	fields        fields
+	contextFields fields
 }
 
 // Builder initializes logger fields builder
 func Builder() builder {
 	return builder{
-		fields:        make(map[string]interface{}),
-		contextFields: make(map[string]interface{}),
+		fields:        fields{},
+		contextFields: fields{},
 	}
 }
 
 // AddField adds a new field
 func (builder builder) AddField(key string, value interface{}) builder {
-	builder.fields[key] = value
+	builder.fields.AddField(key, value)
 
 	return builder
 }
 
 func (builder builder) AddFields(fields map[string]interface{}) builder {
-	for k, v := range fields {
-		builder.AddField(k, v)
-	}
+	builder.AddFields(fields)
 
 	return builder
 }
 
 // AddContextField adds a new context field
 func (builder builder) AddContextField(key string, value interface{}) builder {
-	builder.contextFields[key] = value
+	builder.contextFields.AddField(key, value)
+
+	return builder
+}
+
+// AddContextField adds a new context field
+func (builder builder) AddContextFields(fields map[string]interface{}) builder {
+	builder.contextFields.AddFields(fields)
 
 	return builder
 }
